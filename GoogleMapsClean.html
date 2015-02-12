@@ -53,7 +53,7 @@
 			var latlng = new google.maps.LatLng(startCoord[0], startCoord[1]);
 			var mapOptions = {
 				center: latlng,
-				zoom: 16,
+				zoon:16
 			};
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -68,9 +68,7 @@
 			allLatLngs.push(latlng);
 
 			directionsDisplay.setMap(map);
-			setBounds(map,allLatLngs);
-
-			calcRoute();
+			//setTimeout(function(){setBounds(map,allLatLngs)},10000);
 		}
 
 		function createLatLngs(allCoords){
@@ -112,7 +110,7 @@
 			map.fitBounds(bounds);
 		}
 
-		google.maps.event.addDomListener(window, 'load', initialize);
+		
 
 
 
@@ -137,7 +135,7 @@
 			google.maps.event.addListener(objectWith, eventString, fnToCall);
 		}
 
-
+		google.maps.event.addDomListener(window, 'load', initialize);
 	</script>
 	</head>
 	<body>
