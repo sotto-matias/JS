@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<title>Waypoints in directions</title>
+	<style>
+	html, body, #map-canvas {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+	}
+	div#mapContainer {
+	width: 70%;
+	height: 100vh;
+	}
+
+	#map-canvas{
+		float: left;
+		width: 100%;	
+	}
+
+	#panel {
+		display: inline-block;
+		height: 100vh;
+		width: 30%;
+		float: right;
+		background-color: #C1E8FC;
+	}
+	div#mapContainer {
+		width: 70%;
+		height: 100vh;
+		display: inline-block;
+	}
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js"></script>
+	<script>
+		var rendererOptions = {
+			draggable: true
+		};
+		var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
+		var directionsService = new google.maps.DirectionsService();
+		var map;
+		var allLatLngs;
+		var allMarkers;
+		
+		var allCoord = [[-34.894345, -56.163117,"Hospital Britanico"],[-34.890490, -56.151751,"Hospital de Clinicas"],[-34.895920, -56.164683,"Hospital Italiano"],[-34.898850, -56.164286,"Hospital Pereira Rossell"],[-34.877514, -56.150571, "Hospital Evalngelico"],[-34.879757, -56.187687,"Hospital Vilardebó"]];	
+		var startCoord = [-34.905483, -56.192448];
+		
+
+		function initialize() {
+
+			directionsDisplay = new google.maps.DirectionsRenderer();
+			var latlng = new google.maps.LatLng(startCoord[0], startCoord[1]);
+			var mapOptions = {
+				center: latlng,
+				zoom: 16,
+			};
+			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+			//Creating start Marker
+			var latlng =  createLatLng(startCoord[0],startCoord[1]);
+			var marker =  createMarker(map,latlng);
+
+
+			allLatLngs = createLatLngs(allCoord);
+			allMarkers = createMarkers(map,allLatLngs);
+			
+			allLatLngs.push(latlng);
+
+			directionsDisplay.setMap(map);
+			setBounds(map,allLatLngs);
+
+			calcRoute();
+		}
+
+		function createLatLngs(allCoords){
+			var allLatLng = [];
+			for(var x = 0;x < allCoords.length;x++){
+				var latlng = createLatLng(allCoords[x][0],allCoords[x][1]);
+				allLatLng.push(latlng);
+			}
+			return allLatLng;
+		}
+
+		function createLatLng(coordLat,coordLng){
+			return new google.maps.LatLng(coordLat,coordLng);
+		}
+
+		function createMarkers(map,allLatLng){
+			var allMarkers = [];
+			var marker;
+			for(var x = 0; x < allLatLng.length;x++){
+				marker = createMarker(map,allLatLng[x]);
+				allMarkers.push(marker);
+			}			
+			return allMarkers;
+		}
+
+		function createMarker(map,latlng){
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map,
+			});
+			return marker;
+		}
+
+		function setBounds(map,allLatLngs){
+			var bounds = new google.maps.LatLngBounds();
+			for(var x=0;x<allLatLngs.length;x++){
+				bounds.extend(allLatLngs[x]);
+			}
+			map.fitBounds(bounds);
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+function calcRoute() {
+  var start = new google.maps.LatLng(-34.900682, -56.171449);
+  var end = new google.maps.LatLng(-34.904608, -56.192506);
+  var request = {
+    origin:start,
+    destination:end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(result);
+    }
+  });
+}
+
+	</script>
+	</head>
+	<body>
+	<div>
+		<div id="mapContainer">
+			<div id="map-canvas" style="">
+			</div>
+		</div>
+		<div id="panel">
+
+
+		</div>
+	</div>
+	</body>
+</html>
