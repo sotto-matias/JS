@@ -10,11 +10,7 @@
 	margin: 0px;
 	padding: 0px
 	}
-	div#mapContainer {
-	width: 70%;
-	height: 100vh;
-	}
-
+	
 	#map-canvas{
 		float: left;
 		width: 100%;	
@@ -45,10 +41,11 @@
 		var map;
 		var allLatLngs;
 		var allMarkers;
-		
+
 		var allCoord = [[-34.894345, -56.163117,"Hospital Britanico"],[-34.890490, -56.151751,"Hospital de Clinicas"],[-34.895920, -56.164683,"Hospital Italiano"],[-34.898850, -56.164286,"Hospital Pereira Rossell"],[-34.877514, -56.150571, "Hospital Evalngelico"],[-34.879757, -56.187687,"Hospital Vilardebó"]];	
 		var startCoord = [-34.905483, -56.192448];
-		
+		var startLatLng;
+		var endMarker;
 
 		function initialize() {
 
@@ -61,8 +58,8 @@
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
 			//Creating start Marker
-			var latlng =  createLatLng(startCoord[0],startCoord[1]);
-			var marker =  createMarker(map,latlng);
+			startLatLng =  createLatLng(startCoord[0],startCoord[1]);
+			createMarker(map,latlng);
 
 
 			allLatLngs = createLatLngs(allCoord);
@@ -119,20 +116,27 @@
 
 
 
-function calcRoute() {
-  var start = new google.maps.LatLng(-34.900682, -56.171449);
-  var end = new google.maps.LatLng(-34.904608, -56.192506);
-  var request = {
-    origin:start,
-    destination:end,
-    travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(result, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(result);
-    }
-  });
-}
+		function calcRoute(latlngStart, latlngEnd) {
+		  var start = new google.maps.LatLng(-34.900682, -56.171449);
+		  var end = new google.maps.LatLng(-34.904608, -56.192506);
+		  var request = {
+		    origin:start,
+		    destination:end,
+		    travelMode: google.maps.TravelMode.DRIVING
+		  };
+		  directionsService.route(request,calcRouteCallBack);
+		}
+
+		function calcRouteCallBack(result, status){
+		    if (status == google.maps.DirectionsStatus.OK) {
+		      directionsDisplay.setDirections(result);
+		    }
+		}
+
+		function addingEvent(objectWith,eventString,fnToCall){
+			google.maps.event.addListener(objectWith, eventString, fnToCall);
+		}
+
 
 	</script>
 	</head>
